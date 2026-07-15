@@ -1,9 +1,9 @@
-name: keepcoding
+name: keepcoding-web20
 
 services:
   postgres:
     image: postgres:16
-    container_name: keepcoding-postgres
+    container_name: keepcoding-web20-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
