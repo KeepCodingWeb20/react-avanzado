@@ -31,7 +31,7 @@ Estructura actual y objetivo de organización:
 ├── setup-db/               # entorno local de BD (Docker + PostgreSQL) y guía Prisma
 │   ├── docker-compose.yml
 │   └── README.md
-└── src/                    # contenido de clases en curso
+└── marketplace/                    # contenido de clases en curso
 ```
 
 ## Práctica a completar durante estas semanas
