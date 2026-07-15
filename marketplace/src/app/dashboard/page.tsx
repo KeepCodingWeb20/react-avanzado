@@ -1,22 +1,34 @@
-import { getProjects } from "@/lib/projects";
-import { ProjectCard } from "../components/project-card";
+import { Suspense } from "react";
+import ProjectSection from "../components/project-section";
+import ProjectCardSkeleton from "../components/project-card-skeleton";
+import ProjectStatSection from "../components/project-stat-section";
 
-export default async function DashboardPage() {
-  const projects = await getProjects();
-
+export default function DashboardPage() {
   return (
     <main className="space-y-6">
       <h1 className="text-2xl font-bold">Proyectos</h1>
 
-      {projects.length === 0 ? (
-        <p>No hay proyectos todavía.</p>
-      ) : (
-        <section className="grid gap-4 md:grid-cols-3">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </section>
-      )}
+      <Suspense
+        fallback={
+          <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-10 w-full">
+            Cargando estadísticas...
+          </div>
+        }
+      >
+        <ProjectStatSection />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="grid gap-4 md:grid-cols-3">
+            <ProjectCardSkeleton />
+            <ProjectCardSkeleton />
+            <ProjectCardSkeleton />
+          </div>
+        }
+      >
+        <ProjectSection />
+      </Suspense>
     </main>
   );
 }
