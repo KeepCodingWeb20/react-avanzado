@@ -1,12 +1,17 @@
 import { Suspense } from "react";
 import ProjectSection from "../components/project-section";
-import ProjectCardSkeleton from "../components/project-card-skeleton";
 import ProjectStatSection from "../components/project-stat-section";
+import { CreateProjectForm } from "../components/forms/create-project-form";
+import { getProjects } from "@/lib/projects";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const projects = await getProjects();
+
   return (
     <main className="space-y-6">
       <h1 className="text-2xl font-bold">Proyectos</h1>
+
+      <CreateProjectForm />
 
       <Suspense
         fallback={
@@ -18,17 +23,7 @@ export default function DashboardPage() {
         <ProjectStatSection />
       </Suspense>
 
-      <Suspense
-        fallback={
-          <div className="grid gap-4 md:grid-cols-3">
-            <ProjectCardSkeleton />
-            <ProjectCardSkeleton />
-            <ProjectCardSkeleton />
-          </div>
-        }
-      >
-        <ProjectSection />
-      </Suspense>
+      <ProjectSection projects={projects} />
     </main>
   );
 }

@@ -1,9 +1,11 @@
-import { getProjects } from "@/lib/projects";
 import { ProjectCard } from "./project-card";
+import { ProjectDto } from "@/lib/projects.types";
 
-export default async function ProjectSection() {
-  const projects = await getProjects();
-
+export default async function ProjectSection({
+  projects,
+}: {
+  projects: ProjectDto[];
+}) {
   return (
     <>
       {projects.length === 0 ? (
