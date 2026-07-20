@@ -15,10 +15,3 @@ export async function getProjects(): Promise<ProjectDto[]> {
     createdAt: project.createdAt,
   }));
 }
-
-export async function getProjectStats(): Promise<void> {
-  const projectStats = await prisma.projectStat.findMany();
-  await new Promise((resolve) => setTimeout(resolve, 0));
-
-  console.log("db: projectStats findMany", projectStats);
-}
