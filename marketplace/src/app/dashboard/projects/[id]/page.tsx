@@ -1,25 +1,27 @@
 import { ProjectCard } from "@/app/components/project-card";
-import { getProjectById, getProjectIds } from "@/lib/projects";
+import { OptimisticTitleEditor } from "@/app/components/optimistic-title-editor";
+import { parseProjectId } from "@/lib/project-query";
+import { getProjectById } from "@/lib/projects";
 import { Metadata } from "next";
-
-export const dynamic = "force-static";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateStaticParams() {
-  const projectIds = await getProjectIds();
-  return projectIds.map((id) => ({ id: id.toString() }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const projectDetail = await getProjectById(Number(id));
+  const projectId = parseProjectId(id);
+
+  if (projectId === null) {
+    notFound();
+  }
+
+  const projectDetail = await getProjectById(projectId);
 
   if (!projectDetail) {
-    throw new Error("No hay proyecto");
+    notFound();
   }
 
   return {
@@ -30,16 +32,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectDetailPage({
   params,
-}: {
-  params: Promise<{ id: string }>; // Siempre debe ser string
-}) {
+  searchParams,
+}: Props) {
   const { id } = await params;
+  const projectId = parseProjectId(id);
+  const query = await searchParams;
 
-  const projectDetail = await getProjectById(Number(id));
-
-  if (!projectDetail) {
-    return <div>Proyecto no encontrado o no tienes acceso</div>;
+  if (
+    process.env.NODE_ENV === "development" &&
+    query.demoError === "1"
+  ) {
+    throw new Error("Controlled project detail failure");
   }
 
-  return <ProjectCard project={projectDetail} />;
+  if (projectId === null) {
+    notFound();
+  }
+
+  const projectDetail = await getProjectById(projectId);
+
+  if (!projectDetail) {
+    notFound();
+  }
+
+  return (
+    <section className="grid gap-6">
+      <OptimisticTitleEditor
+        confirmedTitle={projectDetail.title}
+        labMode={process.env.NODE_ENV === "development"}
+        projectId={projectDetail.id}
+      />
+      <ProjectCard hideTitle project={projectDetail} />
+    </section>
+  );
 }

@@ -1,4 +1,3 @@
-import { ProjectModel } from "@/generated/prisma/models";
 import prisma from "./prisma";
 import { ProjectDto } from "./projects.types";
 import { PROJECT_PAGE_SIZE, ProjectQuery } from "./project-query";
@@ -75,6 +74,6 @@ export async function getProjectsByFilter({
 export async function getProjectById(id: number): Promise<ProjectDto | null> {
   console.log("getProjectById: id", { id });
 
-  const result = await prisma.project.findFirst({ where: { id: id } });
+  const result = await prisma.project.findUnique({ where: { id } });
   return result;
 }

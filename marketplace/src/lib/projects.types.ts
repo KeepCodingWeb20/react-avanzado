@@ -4,4 +4,5 @@ export type ProjectDto = {
   description: string;
   likes: number;
   createdAt: Date;
+  ownerId: number | null;
 };

@@ -13,20 +13,31 @@ if (!connectionString) {
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString }),
 });
+const FIXTURE_DESCRIPTION = "Laboratorio de seguridad";
 
 async function ensureDemoProject(
   ownerId: number,
   title: string,
 ): Promise<number> {
   const existing = await prisma.project.findFirst({
-    where: { title },
+    where: {
+      OR: [
+        { ownerId, description: FIXTURE_DESCRIPTION },
+        { title },
+      ],
+    },
     select: { id: true },
   });
 
   if (existing) {
     await prisma.project.update({
       where: { id: existing.id },
-      data: { ownerId },
+      data: {
+        title,
+        description: FIXTURE_DESCRIPTION,
+        likes: 0,
+        ownerId,
+      },
     });
     return existing.id;
   }
@@ -34,7 +45,7 @@ async function ensureDemoProject(
   const project = await prisma.project.create({
     data: {
       title,
-      description: "Laboratorio de seguridad",
+      description: FIXTURE_DESCRIPTION,
       ownerId,
     },
     select: { id: true },

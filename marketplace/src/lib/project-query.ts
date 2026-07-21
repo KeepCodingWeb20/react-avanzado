@@ -7,6 +7,7 @@ export type ProjectQuery = {
 };
 
 export const PROJECT_PAGE_SIZE = 3;
+const PRISMA_INT_MAX = 2_147_483_647;
 
 function first(value: SearchParamValue): string {
   return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
@@ -24,6 +25,15 @@ export function parseProjectQuery(
     query,
     page: page < 1 ? 1 : page,
   };
+}
+
+export function parseProjectId(value: unknown): number | null {
+  if (typeof value !== "string" || !/^[1-9]\d*$/.test(value)) {
+    return null;
+  }
+
+  const id = Number(value);
+  return Number.isSafeInteger(id) && id <= PRISMA_INT_MAX ? id : null;
 }
 
 function projectQueryParams(input: ProjectQuery, page: number) {
