@@ -18,6 +18,18 @@ model Project {
   description String
   likes       Int      @default(0)
   createdAt   DateTime @default(now())
+  ownerId     Int?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId])
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  displayName String
+  createdAt   DateTime  @default(now())
+  projects    Project[]
 }
 
 model ProjectStat {
