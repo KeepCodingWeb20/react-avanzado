@@ -3,14 +3,6 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function helloAction(formatData: FormData): Promise<void> {
-  const username = formatData.get("username");
-
-  console.log("helloAction", { username });
-
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-}
-
 export type ProjectActionState = {
   status: "idle" | "error" | "success";
   message: string;
@@ -57,7 +49,7 @@ export async function createProject(
   }
 
   await prisma.project.create({
-    data: { title, description },
+    data: { title, description, likes: 0 },
   });
 
   revalidatePath("/dashboard");
@@ -67,4 +59,13 @@ export async function createProject(
     message: "Proyecto creado",
     fieldErrors: {},
   };
+}
+
+export async function likeProject(projectId: number): Promise<void> {
+  await prisma.project.update({
+    where: { id: projectId },
+    data: { likes: { increment: 1 } },
+  });
+
+  revalidatePath("/dashboard");
 }

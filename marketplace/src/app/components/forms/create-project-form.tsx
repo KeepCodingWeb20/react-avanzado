@@ -18,7 +18,7 @@ export function CreateProjectForm() {
 
   return (
     <form action={formAction} className="grid gap-2">
-      <label>Título</label>
+      <label htmlFor="title">Título</label>
       <input id="title" name="title" className="border" />
       {hasTitleError && (
         <div id="title-error" className="text-red-500">

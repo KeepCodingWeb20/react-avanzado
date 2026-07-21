@@ -16,6 +16,7 @@ model Project {
   id          Int      @id @default(autoincrement())
   title       String
   description String
+  likes       Int      @default(0)
   createdAt   DateTime @default(now())
 }
 

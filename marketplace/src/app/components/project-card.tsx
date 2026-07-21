@@ -1,4 +1,5 @@
 import { ProjectDto } from "@/lib/projects.types";
+import { LikeButton } from "./like-button";
 
 export function ProjectCard({ project }: { project: ProjectDto }) {
   return (
@@ -8,6 +9,7 @@ export function ProjectCard({ project }: { project: ProjectDto }) {
       <p className="text-sm text-gray-500">
         {project.createdAt.toLocaleDateString()}
       </p>
+      <LikeButton projectId={project.id} likes={project.likes} />
     </article>
   );
 }
